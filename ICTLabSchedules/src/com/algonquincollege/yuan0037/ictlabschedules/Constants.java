@@ -1,4 +1,4 @@
-package com.algonquincollege.mad9132.ictlabschedules;
+package com.algonquincollege.yuan0037.ictlabschedules;
 
 public interface Constants {
 

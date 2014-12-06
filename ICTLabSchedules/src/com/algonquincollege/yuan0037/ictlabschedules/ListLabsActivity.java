@@ -1,4 +1,4 @@
-package com.algonquincollege.mad9132.ictlabschedules;
+package com.algonquincollege.yuan0037.ictlabschedules;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.algonquincollege.mad9132.ictlabschedules.R;
 
 import util.ServiceHandler;
 
