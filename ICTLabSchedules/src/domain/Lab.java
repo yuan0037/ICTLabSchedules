@@ -10,7 +10,7 @@ import android.os.Parcelable;
  * 1) a room
  * 2) a description
  *
- * @author Gerald.Hurdle@AlgonquinCollege.com
+ * @author yuan0037@algonquinlive.com
  * @Version 1.0
  */
 public class Lab implements Parcelable{

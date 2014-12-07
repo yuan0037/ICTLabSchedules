@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import com.algonquincollege.mad9132.ictlabschedules.R;
 
+import util.ColoredArrayAdapter;
 import util.ServiceHandler;
 
 import domain.Lab;
@@ -56,8 +57,9 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		setContentView(R.layout.activity_list_labs);
 
 		//TODO: List adapter
-		labsAdapter = new ArrayAdapter<Lab>(this, android.R.layout.simple_list_item_1);
 		labsList = new ArrayList<Lab>();
+		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1, labsList);
+		
 		new FetchLabs().execute(REMOTE_URL);
 		
 
