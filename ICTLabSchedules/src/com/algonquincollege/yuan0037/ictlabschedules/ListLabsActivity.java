@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.algonquincollege.mad9132.ictlabschedules.R;
 
 import util.ColoredArrayAdapter;
 import util.ServiceHandler;
@@ -18,18 +17,17 @@ import util.ServiceHandler;
 import domain.Lab;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Display the list of ICT labs.
@@ -58,12 +56,13 @@ public class ListLabsActivity extends ListActivity implements Constants {
 
 		//TODO: List adapter
 		labsList = new ArrayList<Lab>();
-		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1, labsList);
+		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1);
 		
+		if (labsList.size()==0)
 		new FetchLabs().execute(REMOTE_URL);
 		
 
-		//labsAdapter.notifyDataSetChanged();
+		//
 		this.setListAdapter(labsAdapter);
 	}
 
@@ -87,6 +86,18 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		
+		Lab lab = labsAdapter.getItem(position); //names.get(position);
+		
+		Intent intent = new Intent(this, ScheduleActivity.class);
+		intent.putExtra("domain.Lab", lab);
+		startActivity(intent);
+		
+	}
+	
 	/**
 	 * Async task class to get json by making HTTP call
 	 * */
@@ -159,6 +170,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			labsList.addAll( result );
 			labsAdapter.clear();
 			labsAdapter.addAll(labsList);
+			labsAdapter.notifyDataSetChanged();
 		}
 	}
 }

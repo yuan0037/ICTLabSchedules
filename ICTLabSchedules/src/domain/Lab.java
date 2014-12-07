@@ -58,4 +58,18 @@ public class Lab implements Parcelable{
 		dest.writeString(room);
 		
 	}
+	
+
+	public static final Parcelable.Creator<Lab> CREATOR = new Parcelable.Creator<Lab>() {
+		@Override
+		public Lab createFromParcel(Parcel source) {
+			return new Lab(source);
+		};
+		
+		@Override
+		public Lab[] newArray(int size) {
+			return new Lab[size];
+		}
+	};
+	
 }

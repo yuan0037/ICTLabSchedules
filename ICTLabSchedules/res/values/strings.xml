@@ -3,5 +3,9 @@
 
     <string name="app_name">ICT Labs</string>
     <string name="action_author">Bo Yuan (yuan0037)</string>
-	<string name="text_placeholder">Place Holder Text</string>
+    <string name="text_placeholder">Place Holder Text</string>
+    <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
