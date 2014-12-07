@@ -1,5 +1,8 @@
 package domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Model an Algonquin College <em>Lab</em>.
  *
@@ -10,7 +13,7 @@ package domain;
  * @author Gerald.Hurdle@AlgonquinCollege.com
  * @Version 1.0
  */
-public class Lab {
+public class Lab implements Parcelable{
 	private String description;
 	private String room;
 
@@ -35,5 +38,24 @@ public class Lab {
 	@Override
 	public String toString() {
 		return room;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public Lab(Parcel in) {
+		description=in.readString();
+		room=in.readString();
+	}
+	
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		
+		dest.writeString(description);
+		dest.writeString(room);
+		
 	}
 }

@@ -1,7 +1,10 @@
 package com.algonquincollege.yuan0037.ictlabschedules;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +39,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * Notes:
  * 1) class ListLabsActivity extends from Android's class ListActivity.
  *
- * @author Gerald.Hurdle@AlgonquinCollege.com
+ * @author yuan0037@algonquinlive.com
  * @Version 1.0
  */
 public class ListLabsActivity extends ListActivity implements Constants {
@@ -44,15 +47,22 @@ public class ListLabsActivity extends ListActivity implements Constants {
 	private static final String TAG_ICT_LABS    = "ict-labs";
 	private static final String TAG_ROOM        = "room";
 	private static final String TAG_DESCRIPTION = "description";
-
+	private static final String REMOTE_URL="http://faculty.edumedia.ca/hurdleg/ict/tt/";
 	private ArrayAdapter<Lab> labsAdapter;
-
+	private List<Lab> labsList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_labs);
 
 		//TODO: List adapter
+		labsAdapter = new ArrayAdapter<Lab>(this, android.R.layout.simple_list_item_1);
+		labsList = new ArrayList<Lab>();
+		new FetchLabs().execute(REMOTE_URL);
+		
+
+		//labsAdapter.notifyDataSetChanged();
+		this.setListAdapter(labsAdapter);
 	}
 
 	@Override
@@ -69,6 +79,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_author) {
+			Toast.makeText(this, "Bo Yuan (yuan0037@algonquinlive.com)", Toast.LENGTH_SHORT).show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -89,7 +100,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			pDialog.setCancelable( false );
 			pDialog.show();
 
-			labsAdapter.clear();
+			labsList.clear();
 		}
 
 		@Override
@@ -111,7 +122,6 @@ public class ListLabsActivity extends ListActivity implements Constants {
 					// Getting JSON Array node
 					JSONArray jsonLabs = jsonObj.getJSONArray( TAG_ICT_LABS );
 
-					//labs.empty();
 					// looping through each Lab, one at a time
 					for (int i = 0; i < jsonLabs.length(); i++) {
 						JSONObject jsonLab = jsonLabs.getJSONObject( i );
@@ -120,8 +130,11 @@ public class ListLabsActivity extends ListActivity implements Constants {
 						String description = jsonLab.getString( TAG_DESCRIPTION );
 
 						// add this lab to the list of labs
-						//TODO: labs.add( new Lab(room, description) );
+						Lab newLab=new Lab(room, description);
+						labs.add(newLab);
+						
 					}
+					
 					return labs;
 				} catch ( JSONException e ) {
 					e.printStackTrace();
@@ -139,7 +152,11 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			// Dismiss the progress dialog
 			if ( pDialog.isShowing() )
 				pDialog.dismiss();
-			//TODO: labsAdapter.addAll( result );
+			//Log.d("ICTLab", String.valueOf(result.size()));'
+			//labsList.clear();
+			labsList.addAll( result );
+			labsAdapter.clear();
+			labsAdapter.addAll(labsList);
 		}
 	}
 }
