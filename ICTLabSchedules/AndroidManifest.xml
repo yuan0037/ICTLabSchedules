@@ -28,8 +28,7 @@
         </activity>
         <activity
             android:name=".ScheduleActivity"
-            android:label="@string/title_activity_schedule" 
-            android:parentActivityName=".ListLabsActivity">
+            android:label="@string/title_activity_schedule" >
         </activity>
     </application>
 

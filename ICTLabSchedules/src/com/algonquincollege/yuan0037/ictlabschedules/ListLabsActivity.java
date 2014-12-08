@@ -58,7 +58,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		labsList = new ArrayList<Lab>();
 		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1);
 		
-		if (labsList.size()==0)
+		//if (labsList.size()==0)
 		new FetchLabs().execute(REMOTE_URL);
 		
 
