@@ -38,6 +38,8 @@ public class LabSchedule {
 			return Integer.valueOf(Color.rgb(111, 111, 111));
 		else if (labName.equals("MAD9133"))
 			return Integer.valueOf(Color.rgb(155, 155, 155));
+		else if (labName.equals("MAD9034"))
+			return Integer.valueOf(Color.parseColor("#CCCCCC"));
 		else return 0;
 		
 	}
