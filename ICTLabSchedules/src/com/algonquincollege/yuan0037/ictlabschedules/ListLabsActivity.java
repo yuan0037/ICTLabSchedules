@@ -92,7 +92,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		
 		Lab lab = labsAdapter.getItem(position); //names.get(position);
 		
-		Intent intent = new Intent(this, ScheduleActivity.class);
+		Intent intent = new Intent(this, ScheduleGridActivity.class);
 		intent.putExtra("domain.Lab", lab);
 		startActivity(intent);
 		
