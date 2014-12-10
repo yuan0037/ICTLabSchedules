@@ -49,6 +49,7 @@ public class ScheduleGridActivity extends Activity {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		Bundle b = getIntent().getExtras();
+		Log.d(Constants.TAG, "detail activity created");
 		currentLab = b.getParcelable("domain.Lab");
 		currentLabScheduleJSONString=b.getString("scheduleJSONString");
 
@@ -58,6 +59,7 @@ public class ScheduleGridActivity extends Activity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
+		Log.d(Constants.TAG, "detail activity started");
 		//Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
 		if (currentLabScheduleJSONString.equals(""))
 		{
@@ -65,10 +67,50 @@ public class ScheduleGridActivity extends Activity {
 		}
 		else
 		{
-			
+			parseScheduleJSONString(currentLabScheduleJSONString);
+			generateGrid();
 		}
 	}
+	private void parseScheduleJSONString(String jSONString){
+		try {
+			currentLabScheduleJSONString=jSONString;
+			JSONObject jsonObj = new JSONObject( jSONString );
 
+			String tempStr = jsonObj.getString(currentLab.getRoom().toLowerCase());
+			// Getting JSON Array node
+			//JSONArray jsonLabSchedules = jsonObj.getJSONArray(currentLab.getRoom().toLowerCase());
+			//;
+			// looping through each schedule, one at a time
+			//Log.d( Constants.TAG, "tempStr1= "+tempStr);
+			
+			JSONObject scheduleForWeekObj = new JSONObject(tempStr);
+			for (int i=8; i<=17; i++)
+			{
+				String singleHourForOneWeekString = scheduleForWeekObj.getString("H"+String.format("%02d", i)+"00");
+				JSONObject singleHourForOneWeekObj = new JSONObject(singleHourForOneWeekString);
+
+				//return days[calendar.get(Calendar.DAY_OF_WEEK)-1];
+
+				for (int j=0; j<=6; j++)
+				{
+					if (!singleHourForOneWeekObj.getString(days[j]).equals("")){
+						LabSchedule lSchedule = new LabSchedule();
+						lSchedule.setRoom(currentLab.getRoom());
+						lSchedule.setLabName(singleHourForOneWeekObj.getString(days[j]));
+						lSchedule.setScheduleStartHour(i);
+						lSchedule.setScheduleEndHour(i+1);
+						lSchedule.setScheduleDayOfWeek(j);
+						//Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
+						labSchedules.add(lSchedule);
+					}
+				}
+			}
+
+		} catch ( JSONException e ) {
+			//Log.d(Constants.TAG, e.getMessage().toString());
+			e.printStackTrace();
+		}	
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -88,7 +130,7 @@ public class ScheduleGridActivity extends Activity {
 		if (item.getItemId() == android.R.id.home) 
 		{
 			Intent returnIntent = new Intent();
-			returnIntent.putExtra("scheduleJSONString",labScheduleJSONString);
+			returnIntent.putExtra("scheduleJSONString",currentLabScheduleJSONString);
 			setResult(RESULT_OK,returnIntent);
 			finish();
 		}	
@@ -126,44 +168,7 @@ public class ScheduleGridActivity extends Activity {
 			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
 
 			if (jsonStr != null) {
-				try {
-					JSONObject jsonObj = new JSONObject( jsonStr );
-
-					String tempStr = jsonObj.getString(currentLab.getRoom().toLowerCase());
-					// Getting JSON Array node
-					//JSONArray jsonLabSchedules = jsonObj.getJSONArray(currentLab.getRoom().toLowerCase());
-					//;
-					// looping through each schedule, one at a time
-					//Log.d( Constants.TAG, "tempStr1= "+tempStr);
-
-					JSONObject scheduleForWeekObj = new JSONObject(tempStr);
-					for (int i=8; i<=17; i++)
-					{
-						String singleHourForOneWeekString = scheduleForWeekObj.getString("H"+String.format("%02d", i)+"00");
-						JSONObject singleHourForOneWeekObj = new JSONObject(singleHourForOneWeekString);
-
-						//return days[calendar.get(Calendar.DAY_OF_WEEK)-1];
-
-						for (int j=0; j<=6; j++)
-						{
-							if (!singleHourForOneWeekObj.getString(days[j]).equals("")){
-								LabSchedule lSchedule = new LabSchedule();
-								lSchedule.setRoom(currentLab.getRoom());
-								lSchedule.setLabName(singleHourForOneWeekObj.getString(days[j]));
-								lSchedule.setScheduleStartHour(i);
-								lSchedule.setScheduleEndHour(i+1);
-								lSchedule.setScheduleDayOfWeek(j);
-								//Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
-								labSchedules.add(lSchedule);
-							}
-						}
-					}
-
-					return null;
-				} catch ( JSONException e ) {
-					//Log.d(Constants.TAG, e.getMessage().toString());
-					e.printStackTrace();
-				}
+				parseScheduleJSONString(jsonStr);
 			} else {
 				Log.e( Constants.TAG + " ServiceHandler", "Couldn't get any data from the url" );
 			}

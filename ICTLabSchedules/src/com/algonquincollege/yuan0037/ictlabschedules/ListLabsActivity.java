@@ -50,7 +50,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 	private Integer currentPositionID;
 	private ArrayAdapter<Lab> labsAdapter;
 	private List<Lab> labsList;
-	private List<String> labScheduleJSONString;
+	private List<String> labScheduleJSONStringList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,12 +58,12 @@ public class ListLabsActivity extends ListActivity implements Constants {
 
 		//TODO: List adapter
 		labsList = new ArrayList<Lab>();
-		labScheduleJSONString=new ArrayList<String>();
+		labScheduleJSONStringList=new ArrayList<String>();
 		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1);
-		
+
 		//if (labsList.size()==0)
 		new FetchLabs().execute(REMOTE_URL);
-		
+
 
 		//
 		this.setListAdapter(labsAdapter);
@@ -95,25 +95,29 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		{
 			if (resultCode==RESULT_OK)
 			{
-			 Log.d(Constants.TAG, data.getStringExtra("scheduleJSONString"));
-			 labScheduleJSONString.set(currentPositionID,String.valueOf(data.getStringExtra("scheduleJSONString")));
+				Log.d(Constants.TAG, "now get data from detail activity: "+data.getStringExtra("scheduleJSONString"));
+				if (labScheduleJSONStringList.get(currentPositionID).equals(""))
+				{
+					labScheduleJSONStringList.set(currentPositionID,String.valueOf(data.getStringExtra("scheduleJSONString")));
+				}
 			}
 		}
 	}
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		
+
 		Lab lab = labsAdapter.getItem(position); //names.get(position);
 		currentPositionID=Integer.valueOf(position);
 		Intent intent = new Intent(this, ScheduleGridActivity.class);
 		intent.putExtra("domain.Lab", lab);
-		intent.putExtra("scheduleJSONString", labScheduleJSONString.get(currentPositionID));
+		Log.d(Constants.TAG, "now sending data to detail activity: "+labScheduleJSONStringList.get(currentPositionID));
+		intent.putExtra("scheduleJSONString", labScheduleJSONStringList.get(currentPositionID));
 
 		startActivityForResult(intent, 1);
-		
+
 	}
-	
+
 	/**
 	 * Async task class to get json by making HTTP call
 	 * */
@@ -161,9 +165,9 @@ public class ListLabsActivity extends ListActivity implements Constants {
 						// add this lab to the list of labs
 						Lab newLab=new Lab(room, description);
 						labs.add(newLab);
-						
+
 					}
-					
+
 					return labs;
 				} catch ( JSONException e ) {
 					e.printStackTrace();
@@ -186,7 +190,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			labsList.addAll( result );
 			for (int i=0; i<=labsList.size()-1;i++)
 			{
-				labScheduleJSONString.add(String.valueOf(""));
+				labScheduleJSONStringList.add(String.valueOf(""));
 			}
 			labsAdapter.clear();
 			labsAdapter.addAll(labsList);
