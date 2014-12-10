@@ -47,8 +47,10 @@ public class ListLabsActivity extends ListActivity implements Constants {
 	private static final String TAG_ROOM        = "room";
 	private static final String TAG_DESCRIPTION = "description";
 	private static final String REMOTE_URL="http://faculty.edumedia.ca/hurdleg/ict/tt/";
+	private Integer currentPositionID;
 	private ArrayAdapter<Lab> labsAdapter;
 	private List<Lab> labsList;
+	private List<String> labScheduleJSONString;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +58,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 
 		//TODO: List adapter
 		labsList = new ArrayList<Lab>();
+		labScheduleJSONString=new ArrayList<String>();
 		labsAdapter = new ColoredArrayAdapter(this, android.R.layout.simple_list_item_1);
 		
 		//if (labsList.size()==0)
@@ -87,14 +90,27 @@ public class ListLabsActivity extends ListActivity implements Constants {
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode==1)
+		{
+			if (resultCode==RESULT_OK)
+			{
+			 Log.d(Constants.TAG, data.getStringExtra("scheduleJSONString"));
+			 labScheduleJSONString.set(currentPositionID,String.valueOf(data.getStringExtra("scheduleJSONString")));
+			}
+		}
+	}
+	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		
 		Lab lab = labsAdapter.getItem(position); //names.get(position);
-		
+		currentPositionID=Integer.valueOf(position);
 		Intent intent = new Intent(this, ScheduleGridActivity.class);
 		intent.putExtra("domain.Lab", lab);
-		startActivity(intent);
+		intent.putExtra("scheduleJSONString", labScheduleJSONString.get(currentPositionID));
+
+		startActivityForResult(intent, 1);
 		
 	}
 	
@@ -168,6 +184,10 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			//Log.d("ICTLab", String.valueOf(result.size()));'
 			//labsList.clear();
 			labsList.addAll( result );
+			for (int i=0; i<=labsList.size()-1;i++)
+			{
+				labScheduleJSONString.add(String.valueOf(""));
+			}
 			labsAdapter.clear();
 			labsAdapter.addAll(labsList);
 			labsAdapter.notifyDataSetChanged();

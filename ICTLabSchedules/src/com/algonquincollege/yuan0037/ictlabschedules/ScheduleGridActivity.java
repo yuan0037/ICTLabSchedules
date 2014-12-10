@@ -17,6 +17,7 @@ import domain.LabSchedule;
 import android.R.color;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,9 +33,10 @@ import android.widget.TableRow.LayoutParams;
 
 public class ScheduleGridActivity extends Activity {
 	private Lab currentLab;
+	private String currentLabScheduleJSONString;
 	private List<LabSchedule> labSchedules;
 	private GridLayout labGrid; 
-
+	private String labScheduleJSONString;
 	private static final String[] days = 
 		{"sunday", "monday", "tuesday", 
 		"wednesday", "thursday", "friday", "saturday"};
@@ -48,7 +50,7 @@ public class ScheduleGridActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		Bundle b = getIntent().getExtras();
 		currentLab = b.getParcelable("domain.Lab");
-
+		currentLabScheduleJSONString=b.getString("scheduleJSONString");
 
 	}
 
@@ -56,8 +58,15 @@ public class ScheduleGridActivity extends Activity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
-		new FetchLabSchedules().execute(Constants.URL+currentLab.getRoom().toLowerCase());
+		//Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
+		if (currentLabScheduleJSONString.equals(""))
+		{
+			new FetchLabSchedules().execute(Constants.URL+currentLab.getRoom().toLowerCase());
+		}
+		else
+		{
+			
+		}
 	}
 
 	@Override
@@ -76,7 +85,11 @@ public class ScheduleGridActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (item.getItemId() == android.R.id.home) {
+		if (item.getItemId() == android.R.id.home) 
+		{
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("scheduleJSONString",labScheduleJSONString);
+			setResult(RESULT_OK,returnIntent);
 			finish();
 		}	
 		return super.onOptionsItemSelected(item);
@@ -109,7 +122,7 @@ public class ScheduleGridActivity extends Activity {
 
 			// Making a request to url and getting response
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
-
+			labScheduleJSONString=jsonStr;
 			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
 
 			if (jsonStr != null) {
@@ -121,7 +134,7 @@ public class ScheduleGridActivity extends Activity {
 					//JSONArray jsonLabSchedules = jsonObj.getJSONArray(currentLab.getRoom().toLowerCase());
 					//;
 					// looping through each schedule, one at a time
-					Log.d( Constants.TAG, "tempStr1= "+tempStr);
+					//Log.d( Constants.TAG, "tempStr1= "+tempStr);
 
 					JSONObject scheduleForWeekObj = new JSONObject(tempStr);
 					for (int i=8; i<=17; i++)
@@ -140,7 +153,7 @@ public class ScheduleGridActivity extends Activity {
 								lSchedule.setScheduleStartHour(i);
 								lSchedule.setScheduleEndHour(i+1);
 								lSchedule.setScheduleDayOfWeek(j);
-								Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
+								//Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
 								labSchedules.add(lSchedule);
 							}
 						}
@@ -148,7 +161,7 @@ public class ScheduleGridActivity extends Activity {
 
 					return null;
 				} catch ( JSONException e ) {
-					Log.d(Constants.TAG, e.getMessage().toString());
+					//Log.d(Constants.TAG, e.getMessage().toString());
 					e.printStackTrace();
 				}
 			} else {
@@ -165,7 +178,7 @@ public class ScheduleGridActivity extends Activity {
 			if ( pDialog.isShowing() )
 				pDialog.dismiss();
 
-			Log.d(Constants.TAG, String.valueOf(labSchedules.size()));
+			//Log.d(Constants.TAG, String.valueOf(labSchedules.size()));
 			generateGrid();
 		}
 	}
@@ -243,18 +256,18 @@ public class ScheduleGridActivity extends Activity {
 					dailyScheduleList.add(lS);
 				}
 			}
-			Log.d(Constants.TAG, days[k]+ " daily count before processing="+String.valueOf(dailyScheduleList.size()));
+			//Log.d(Constants.TAG, days[k]+ " daily count before processing="+String.valueOf(dailyScheduleList.size()));
 			Collections.sort(dailyScheduleList, new CustomComparator());
 			for (int l=dailyScheduleList.size()-1; l>=1; l--)
 			{
 
 				if ((dailyScheduleList.get(l).getLabName().equals(dailyScheduleList.get(l-1).getLabName())) &&(dailyScheduleList.get(l).getScheduleStartHour().equals(dailyScheduleList.get(l-1).getScheduleEndHour())))
 				{
-					Log.d(Constants.TAG, "L ="+dailyScheduleList.get(l).getScheduleStartHour());
-					Log.d(Constants.TAG, "L-1 ="+dailyScheduleList.get(l-1).getScheduleStartHour());
+					//Log.d(Constants.TAG, "L ="+dailyScheduleList.get(l).getScheduleStartHour());
+					//Log.d(Constants.TAG, "L-1 ="+dailyScheduleList.get(l-1).getScheduleStartHour());
 					dailyScheduleList.get(l-1).setScheduleEndHour(dailyScheduleList.get(l).getScheduleEndHour());
 					dailyScheduleList.remove(l);
-					Log.d(Constants.TAG, days[k]+" daily count after processing="+String.valueOf(dailyScheduleList.size()));
+					//Log.d(Constants.TAG, days[k]+" daily count after processing="+String.valueOf(dailyScheduleList.size()));
 					
 				}
 			}
@@ -274,7 +287,7 @@ public class ScheduleGridActivity extends Activity {
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
 			
-			Log.d(Constants.TAG, "drawing:"+days[lS.getScheduleDayOfWeek()]+lS.getLabName()+ String.valueOf(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
+			//Log.d(Constants.TAG, "drawing:"+days[lS.getScheduleDayOfWeek()]+lS.getLabName()+ String.valueOf(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
 			paramsForTitle.rowSpec= GridLayout.spec(lS.getScheduleStartHour()-8+1,lS.getScheduleEndHour()-lS.getScheduleStartHour());
 
 			paramsForTitle.columnSpec=GridLayout.spec(lS.getScheduleDayOfWeek()+1);

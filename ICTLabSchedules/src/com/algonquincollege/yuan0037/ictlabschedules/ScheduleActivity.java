@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import util.ServiceHandler;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class ScheduleActivity extends Activity {
 	private Lab currentLab;
 	private List<LabSchedule> labSchedules;
 	private TableLayout generalTable;
+	private String labScheduleJSONString;
 	private static final String[] days = 
 		{"sunday", "monday", "tuesday", 
 		"wednesday", "thursday", "friday", "saturday"};
@@ -77,6 +79,7 @@ public class ScheduleActivity extends Activity {
 			return true;
 		}
 		if (item.getItemId() == android.R.id.home) {
+
 			finish();
 		}	
 		return super.onOptionsItemSelected(item);
@@ -111,7 +114,7 @@ public class ScheduleActivity extends Activity {
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
 
 			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
-
+			labScheduleJSONString=jsonStr;
 			if (jsonStr != null) {
 				try {
 					JSONObject jsonObj = new JSONObject( jsonStr );
