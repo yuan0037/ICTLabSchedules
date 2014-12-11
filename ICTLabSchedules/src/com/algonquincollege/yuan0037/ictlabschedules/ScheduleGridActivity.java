@@ -40,7 +40,6 @@ public class ScheduleGridActivity extends Activity {
 	private String currentLabScheduleJSONString;
 	private List<LabSchedule> labSchedules;
 	private GridLayout labGrid; 
-	private String labScheduleJSONString;
 	private static final String[] days = 
 		{"sunday", "monday", "tuesday", 
 		"wednesday", "thursday", "friday", "saturday"};
@@ -161,14 +160,14 @@ public class ScheduleGridActivity extends Activity {
 
 		@Override
 		protected List<LabSchedule> doInBackground( String... params ) {
-			List<LabSchedule> schedules = new ArrayList<LabSchedule>();
+//			List<LabSchedule> schedules = new ArrayList<LabSchedule>();
 
 			// Creating service handler class instance
 			ServiceHandler sh = new ServiceHandler();
 
 			// Making a request to url and getting response
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
-			labScheduleJSONString=jsonStr;
+//			labScheduleJSONString=jsonStr;
 			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
 
 			if (jsonStr != null) {
@@ -206,6 +205,7 @@ public class ScheduleGridActivity extends Activity {
 		labGrid.setRowCount(11);
 		labGrid.setColumnCount(8);
 
+		//generate the first cell (0, 0);
 		TextView tvColumnHourTitle = new TextView(this);
 		tvColumnHourTitle.setText("Time");
 		tvColumnHourTitle.setWidth(100);
@@ -219,6 +219,7 @@ public class ScheduleGridActivity extends Activity {
 
 		labGrid.addView(tvColumnHourTitle);
 
+		//generate the first row's cells from Sunday to Saturday (sun, mon, tue, ...sat);
 		for (int i=0; i<=6;i++)
 		{
 			TextView tvColumnTitle = new TextView(this);
@@ -237,6 +238,7 @@ public class ScheduleGridActivity extends Activity {
 
 		}
 		
+		//generate the first column's cells, from 8H00 to 17:00;
 		for (int i=8; i<=17; i++)
 		{
 			TextView tvHourTitle = new TextView(this);
@@ -252,6 +254,11 @@ public class ScheduleGridActivity extends Activity {
 			tvHourTitle.setLayoutParams(paramsForTitle);
 			labGrid.addView(tvHourTitle);
 		}
+		
+		//process labSchedule arrays by each day (mon, tue, ... )
+		//for each day, sort the labSchedule objects by starting hour; 
+		//combine continuing labSchedule objects into one; 
+		//then get the objects back to the labSchedules array; 
 		List<LabSchedule> newWeekScheduleList=new ArrayList<LabSchedule>();
 
 		for (int k=0; k<=6; k++)
@@ -286,6 +293,7 @@ public class ScheduleGridActivity extends Activity {
 		labSchedules.clear();
 		labSchedules.addAll(newWeekScheduleList);
 		
+		//drawing the current day's column 
 		Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
 		TextView tvColumnHighlightCurrentDay = new TextView(this);
 		tvColumnHighlightCurrentDay.setWidth(100);
@@ -294,20 +302,15 @@ public class ScheduleGridActivity extends Activity {
 		GridLayout.LayoutParams paramsForHighlightCurrentDay = new GridLayout.LayoutParams();
 		paramsForHighlightCurrentDay.height = LayoutParams.MATCH_PARENT;
 		paramsForHighlightCurrentDay.width = LayoutParams.MATCH_PARENT;
-		
-		//Log.d(Constants.TAG, "drawing:"+days[lS.getScheduleDayOfWeek()]+lS.getLabName()+ String.valueOf(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
 		paramsForHighlightCurrentDay.rowSpec= GridLayout.spec(0, 11);
-
 		paramsForHighlightCurrentDay.columnSpec=GridLayout.spec(localCalendar.get(Calendar.DAY_OF_WEEK));
 		paramsForHighlightCurrentDay.setGravity(Gravity.FILL);
-		//|Gravity.CENTER_VERTICAL);
 		tvColumnHighlightCurrentDay.setLayoutParams(paramsForHighlightCurrentDay);
-		//tvColumnHighlightCurrentDay.setText("TODAY");
 		tvColumnHighlightCurrentDay.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 		labGrid.addView(tvColumnHighlightCurrentDay);
 		
 
-		
+		//draw schedule for each labSchedule object;
 		for(LabSchedule lS : labSchedules)
 		{
 			TextView tvSchedule = new TextView(this);
@@ -326,8 +329,12 @@ public class ScheduleGridActivity extends Activity {
 			//|Gravity.CENTER_VERTICAL);
 			tvSchedule.setLayoutParams(paramsForTitle);
 			tvSchedule.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-			tvSchedule.setBackgroundColor(lS.getScheduleColor());
+
+			tvSchedule.setBackgroundResource(R.drawable.border_style_schedule_cell);
+			tvSchedule.setBackgroundColor(lS.getScheduleColor());			
 			//tvSchedule.getBackground().setAlpha(128);
+			
+			//highlight the current hour's schedule when possible; 
 			if (lS.getScheduleDayOfWeek().equals(localCalendar.get(Calendar.DAY_OF_WEEK)-1))
 			{
 				if ((lS.getScheduleStartHour()<=localCalendar.get(Calendar.HOUR_OF_DAY)) && 

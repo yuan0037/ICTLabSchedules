@@ -21,25 +21,39 @@ public class LabSchedule {
 	
 	public Integer getLabScheduleColorFromName()
 	{
-		
+//		Integer tempResult=Integer.valueOf(0);
+//		switch (labName) {
+//		case "MAD9111":
+//			tempResult= Integer.valueOf(Color.parseColor("#FFA330"));
+//			break;
+//		case "MAD9014":
+//			tempResult= Integer.valueOf(Color.parseColor("#870DFF"));
+//			break;
+//		case "MAD8010":
+//			tempResult= Integer.valueOf(Color.parseColor("7F7218"));
+//			break;
+//		default:
+//			tempResult= 0;
+//		}
+//		return tempResult;
 		if (labName.equals("MAD9111"))
-		return Integer.valueOf(Color.rgb(255, 0, 0));
+		return Integer.valueOf(Color.parseColor("#FFA330"));
 		else if (labName.equals("MAD9014"))
-			return Integer.valueOf(Color.rgb(255, 255, 0));
+			return Integer.valueOf(Color.parseColor("#870DFF"));
 		else if (labName.equals("MAD8010"))
-			return Integer.valueOf(Color.rgb(0, 255, 255));
+			return Integer.valueOf(Color.parseColor("#7F7218"));
 		else if (labName.equals("MAD9132"))
-			return Integer.valueOf(Color.rgb(0, 255, 0));
+			return Integer.valueOf(Color.parseColor("#21E888"));
 		else if (labName.equals("OPEN"))
-			return Integer.valueOf(Color.rgb(0, 0, 255));
+			return Integer.valueOf(Color.parseColor("#24FFEB"));
 		else if (labName.equals("MAD9010"))
-			return Integer.valueOf(Color.rgb(0, 122, 122));	
+			return Integer.valueOf(Color.parseColor("#907CFF"));	
 		else if (labName.equals("MAD9013"))
-			return Integer.valueOf(Color.rgb(111, 111, 111));
+			return Integer.valueOf(Color.parseColor("#27CC77"));
 		else if (labName.equals("MAD9133"))
-			return Integer.valueOf(Color.rgb(155, 155, 155));
+			return Integer.valueOf(Color.parseColor("#31CDFF"));
 		else if (labName.equals("MAD9034"))
-			return Integer.valueOf(Color.parseColor("#CCCCCC"));
+			return Integer.valueOf(Color.parseColor("#18677F"));
 		else return 0;
 		
 	}
