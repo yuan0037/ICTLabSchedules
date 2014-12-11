@@ -1,11 +1,14 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.Date;
-
 import android.graphics.Color;
 
-
+/**
+ * Object for each Schedule.
+ *
+ * @author yuan0037@algonquinlive.com
+ * @Version 1.0
+ */
 
 public class LabSchedule {
 

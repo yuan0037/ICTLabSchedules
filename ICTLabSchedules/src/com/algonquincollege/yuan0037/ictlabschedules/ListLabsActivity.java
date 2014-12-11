@@ -92,7 +92,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		{
 			if (resultCode==RESULT_OK)
 			{
-				Log.d(Constants.TAG, "now get data from detail activity: "+data.getStringExtra("scheduleJSONString"));
+				//Log.d(Constants.TAG, "now get data from detail activity: "+data.getStringExtra("scheduleJSONString"));
 				if (labScheduleJSONStringList.get(currentPositionID).equals(""))
 				{
 					labScheduleJSONStringList.set(currentPositionID,String.valueOf(data.getStringExtra("scheduleJSONString")));
@@ -108,7 +108,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 		currentPositionID=Integer.valueOf(position);
 		Intent intent = new Intent(this, ScheduleGridActivity.class);
 		intent.putExtra("domain.Lab", lab);
-		Log.d(Constants.TAG, "now sending data to detail activity: "+labScheduleJSONStringList.get(currentPositionID));
+		//Log.d(Constants.TAG, "now sending data to detail activity: "+labScheduleJSONStringList.get(currentPositionID));
 		intent.putExtra("scheduleJSONString", labScheduleJSONStringList.get(currentPositionID));
 
 		startActivityForResult(intent, 1);
@@ -143,7 +143,7 @@ public class ListLabsActivity extends ListActivity implements Constants {
 			// Making a request to url and getting response
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
 
-			Log.d( TAG + " Response: ", "> " + jsonStr );
+			//Log.d( TAG + " Response: ", "> " + jsonStr );
 
 			if (jsonStr != null) {
 				try {

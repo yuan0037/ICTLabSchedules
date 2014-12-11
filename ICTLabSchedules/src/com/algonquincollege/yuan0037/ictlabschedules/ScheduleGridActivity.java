@@ -2,26 +2,18 @@ package com.algonquincollege.yuan0037.ictlabschedules;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.TimeZone;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import util.ServiceHandler;
 import domain.Lab;
 import domain.LabSchedule;
-import android.R.color;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,11 +21,23 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 import com.algonquincollege.yuan0037.ictlabschedules.R;
+
+/**
+ * Display the schedule list of a specified ICT lab.
+ *
+ * Usage:
+ * 1) take a currentLab object as the input object; 
+ *
+ * Notes:
+ * 1) Used gridLayout to show the schedules; 
+ * 2) A second gridLayout was introduced to show a fixed time-ruler;
+ *
+ * @author yuan0037@algonquinlive.com
+ * @Version 1.0
+ */
 
 public class ScheduleGridActivity extends Activity {
 	private Lab currentLab;
@@ -49,14 +53,14 @@ public class ScheduleGridActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule_grid);
-		
+
 		labGrid=(GridLayout) this.findViewById(R.id.scheduleGridView);
 		labHourGrid=(GridLayout) this.findViewById(R.id.scheduleGridViewForHourTitle);
 		labSchedules = new ArrayList<LabSchedule>();
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		Bundle b = getIntent().getExtras();
-		Log.d(Constants.TAG, "detail activity created");
+		//Log.d(Constants.TAG, "detail activity created");
 		currentLab = b.getParcelable("domain.Lab");
 		currentLabScheduleJSONString=b.getString("scheduleJSONString");
 
@@ -66,7 +70,7 @@ public class ScheduleGridActivity extends Activity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		Log.d(Constants.TAG, "detail activity started");
+		//Log.d(Constants.TAG, "detail activity started");
 		//Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
 		if (currentLabScheduleJSONString.equals(""))
 		{
@@ -82,14 +86,7 @@ public class ScheduleGridActivity extends Activity {
 		try {
 			currentLabScheduleJSONString=jSONString;
 			JSONObject jsonObj = new JSONObject( jSONString );
-
 			String tempStr = jsonObj.getString(currentLab.getRoom().toLowerCase());
-			// Getting JSON Array node
-			//JSONArray jsonLabSchedules = jsonObj.getJSONArray(currentLab.getRoom().toLowerCase());
-			//;
-			// looping through each schedule, one at a time
-			//Log.d( Constants.TAG, "tempStr1= "+tempStr);
-			
 			JSONObject scheduleForWeekObj = new JSONObject(tempStr);
 			for (int i=8; i<=17; i++)
 			{
@@ -106,7 +103,7 @@ public class ScheduleGridActivity extends Activity {
 						lSchedule.setLabName(singleHourForOneWeekObj.getString(days[j]));
 						lSchedule.setScheduleStartHour(i);
 						lSchedule.setScheduleEndHour(i+1);
-						lSchedule.setScheduleDayOfWeek(j);
+						lSchedule.setScheduleDayOfWeek(j+1);
 						//Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
 						labSchedules.add(lSchedule);
 					}
@@ -164,15 +161,14 @@ public class ScheduleGridActivity extends Activity {
 
 		@Override
 		protected List<LabSchedule> doInBackground( String... params ) {
-//			List<LabSchedule> schedules = new ArrayList<LabSchedule>();
+			//			List<LabSchedule> schedules = new ArrayList<LabSchedule>();
 
 			// Creating service handler class instance
 			ServiceHandler sh = new ServiceHandler();
 
 			// Making a request to url and getting response
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
-//			labScheduleJSONString=jsonStr;
-			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
+			//Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
 
 			if (jsonStr != null) {
 				parseScheduleJSONString(jsonStr);
@@ -207,7 +203,7 @@ public class ScheduleGridActivity extends Activity {
 
 		labGrid.removeAllViews();
 		labHourGrid.removeAllViews();
-		
+
 		//set up the grid to have 11 rows and 8 columns;
 		//11 rows: column header row, and 10 rows from 8H00 to 1700
 		//8 columns: row header column, and 7 columns from sunday to saturday; 
@@ -250,15 +246,15 @@ public class ScheduleGridActivity extends Activity {
 			tvColumnTitle.setLayoutParams(paramsForTitle);
 			labGrid.addView(tvColumnTitle);
 		}
-		
-		//generate the first column's cells, from 8H00 to 17:00;
+
+		//generate the first column's cells, from 8H00 to 17:00 for labHourGrid;
 		for (int i=8; i<=17; i++)
 		{
 			TextView tvHourTitle = new TextView(this);
 			tvHourTitle.setText(String.format("%2d", i));
 			tvHourTitle.setWidth(Constants.COLUMN_WIDTH-10);
 			tvHourTitle.setHeight(Constants.ROW_HEIGHT);
-	
+
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
@@ -270,45 +266,40 @@ public class ScheduleGridActivity extends Activity {
 			//labGrid.addView(tvHourTitle);
 			labHourGrid.addView(tvHourTitle);
 		}
-		
-		//generate the first column's cells, from 8H00 to 17:00;
+
+		//generate the first column's cells, from 8H00 to 17:00 for labGrid;
+		//please note, have to set up the first column the same as the 
+		//other grid, if I remove this part of code, this grid's certain views
+		//will collapse to wrong positions; don't know why
+		//in order to avoid duplicated "time" column, I set the width to 1; 		
 		for (int i=8; i<=17; i++)
 		{
 			TextView tvHourTitle = new TextView(this);
 			tvHourTitle.setText(String.format("%2d", i));
-			//please note, have to set up the first column the same as the 
-			//other grid, if I remove this part of code, this grid's certain views
-			//will collapse to wrong positions; don't know why
-			//in order to avoid duplicated "time" column, I set the width to 1; 
 			tvHourTitle.setWidth(1);
 			tvHourTitle.setHeight(Constants.ROW_HEIGHT);
-	
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
-
 			paramsForTitle.rowSpec= GridLayout.spec(i-8+1);
 			paramsForTitle.columnSpec=GridLayout.spec(0);
 			paramsForTitle.setGravity(Gravity.CENTER);
 			tvHourTitle.setLayoutParams(paramsForTitle);
-			//labGrid.addView(tvHourTitle);
 			labGrid.addView(tvHourTitle);
 		}
-		
+
 		//process labSchedule arrays by each day (mon, tue, ... )
 		//and get an array for each day's schedule
 		//for each day's array, sort the labSchedule objects by starting hour; 
 		//combine continuing labSchedule objects into one; 
 		//then get each day's array back to the labSchedules array; 
 		List<LabSchedule> newWeekScheduleList=new ArrayList<LabSchedule>();
-
 		for (int k=0; k<=6; k++)
 		{
-
 			List<LabSchedule> dailyScheduleList = new ArrayList<LabSchedule>();
 			for (LabSchedule lS: labSchedules)
 			{
-				if (lS.getScheduleDayOfWeek().equals(k))
+				if (lS.getScheduleDayOfWeek().equals(k+1))
 				{
 					dailyScheduleList.add(lS);
 				}
@@ -326,26 +317,29 @@ public class ScheduleGridActivity extends Activity {
 			}
 			newWeekScheduleList.addAll(dailyScheduleList);
 		}
-
 		labSchedules.clear();
 		labSchedules.addAll(newWeekScheduleList);
-		
-		//highlight the current day's column 
+
+
+		//highlight the current day's column if it is not a saturday or sunday;
+
 		Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
-		TextView tvColumnHighlightCurrentDay = new TextView(this);
-		tvColumnHighlightCurrentDay.setWidth(Constants.COLUMN_WIDTH);
-		tvColumnHighlightCurrentDay.setBackgroundColor(Constants.TODAY_HIGHLIGHT_COLOR);
-		tvColumnHighlightCurrentDay.getBackground().setAlpha(128);
-		GridLayout.LayoutParams paramsForHighlightCurrentDay = new GridLayout.LayoutParams();
-		paramsForHighlightCurrentDay.height = LayoutParams.MATCH_PARENT;
-		paramsForHighlightCurrentDay.width = LayoutParams.MATCH_PARENT;
-		paramsForHighlightCurrentDay.rowSpec= GridLayout.spec(0, 11);
-		paramsForHighlightCurrentDay.columnSpec=GridLayout.spec(localCalendar.get(Calendar.DAY_OF_WEEK));
-		paramsForHighlightCurrentDay.setGravity(Gravity.FILL);
-		tvColumnHighlightCurrentDay.setLayoutParams(paramsForHighlightCurrentDay);
-		tvColumnHighlightCurrentDay.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-		labGrid.addView(tvColumnHighlightCurrentDay);
-		
+		if ((localCalendar.get(Calendar.DAY_OF_WEEK)>1) && (localCalendar.get(Calendar.DAY_OF_WEEK)<7))
+		{
+			TextView tvColumnHighlightCurrentDay = new TextView(this);
+			tvColumnHighlightCurrentDay.setWidth(Constants.COLUMN_WIDTH);
+			tvColumnHighlightCurrentDay.setBackgroundColor(Constants.TODAY_HIGHLIGHT_COLOR);
+			tvColumnHighlightCurrentDay.getBackground().setAlpha(128);
+			GridLayout.LayoutParams paramsForHighlightCurrentDay = new GridLayout.LayoutParams();
+			paramsForHighlightCurrentDay.height = LayoutParams.MATCH_PARENT;
+			paramsForHighlightCurrentDay.width = LayoutParams.MATCH_PARENT;
+			paramsForHighlightCurrentDay.rowSpec= GridLayout.spec(0, 11);
+			paramsForHighlightCurrentDay.columnSpec=GridLayout.spec(localCalendar.get(Calendar.DAY_OF_WEEK));
+			paramsForHighlightCurrentDay.setGravity(Gravity.FILL);
+			tvColumnHighlightCurrentDay.setLayoutParams(paramsForHighlightCurrentDay);
+			tvColumnHighlightCurrentDay.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+			labGrid.addView(tvColumnHighlightCurrentDay);
+		}
 
 		//draw schedule for each labSchedule object;
 		for(LabSchedule lS : labSchedules)
@@ -358,28 +352,16 @@ public class ScheduleGridActivity extends Activity {
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
-			
-			//Log.d(Constants.TAG, "drawing:"+days[lS.getScheduleDayOfWeek()]+lS.getLabName()+ String.valueOf(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
-			if (lS.getLabName().equals("MAD9111"))
-			{
-				Log.d(Constants.TAG, "day of week = "+days[lS.getScheduleDayOfWeek()]+" start hour = "+String.valueOf(lS.getScheduleStartHour())+"end hour = "+
-			String.valueOf(lS.getScheduleEndHour()));
-				
-				
-			}
-			
 			paramsForTitle.rowSpec= GridLayout.spec(lS.getScheduleStartHour()-8+1,lS.getScheduleEndHour()-lS.getScheduleStartHour());
 
-			paramsForTitle.columnSpec=GridLayout.spec(lS.getScheduleDayOfWeek()+1);
+			paramsForTitle.columnSpec=GridLayout.spec(lS.getScheduleDayOfWeek());
 			paramsForTitle.setGravity(Gravity.FILL);
-			//|Gravity.CENTER_VERTICAL);
 			tvSchedule.setLayoutParams(paramsForTitle);
 			tvSchedule.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
-			//tvSchedule.setBackgroundResource(R.drawable.border_style_schedule_cell);
 			tvSchedule.setBackgroundColor(lS.getScheduleColor());			
 			//tvSchedule.getBackground().setAlpha(128);
-			
+
 			//highlight the current hour's schedule when possible; 
 			if (lS.getScheduleDayOfWeek().equals(localCalendar.get(Calendar.DAY_OF_WEEK)-1))
 			{
@@ -389,20 +371,20 @@ public class ScheduleGridActivity extends Activity {
 				//in other words, we do not highlight any schedule 
 				//ends on 9:00 (current actual interger hour)
 				if (localCalendar.get(Calendar.MINUTE)==0)
-				//Log.d(Constants.TAG, "current minute = "+ String.valueOf(localCalendar.get(Calendar.MINUTE)));	
+					//Log.d(Constants.TAG, "current minute = "+ String.valueOf(localCalendar.get(Calendar.MINUTE)));	
 				{
 					if ((lS.getScheduleStartHour()<=localCalendar.get(Calendar.HOUR_OF_DAY)) && 
 							(lS.getScheduleEndHour()>localCalendar.get(Calendar.HOUR_OF_DAY)))
-								tvSchedule.setBackgroundResource(R.drawable.border_style);
-					
+						tvSchedule.setBackgroundResource(R.drawable.border_style);
+
 				}
 				else
 				{
 					if ((lS.getScheduleStartHour()<=localCalendar.get(Calendar.HOUR_OF_DAY)) && 
 							(lS.getScheduleEndHour()>localCalendar.get(Calendar.HOUR_OF_DAY)))
-								tvSchedule.setBackgroundResource(R.drawable.border_style);
+						tvSchedule.setBackgroundResource(R.drawable.border_style);
 				}
-					
+
 			}
 			labGrid.addView(tvSchedule);
 		}

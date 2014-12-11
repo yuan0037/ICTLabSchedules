@@ -2,16 +2,11 @@ package com.algonquincollege.yuan0037.ictlabschedules;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import util.ServiceHandler;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,20 +17,29 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
-
 import com.algonquincollege.yuan0037.ictlabschedules.R;
-
 import domain.Lab;
 import domain.LabSchedule;
-
 import com.algonquincollege.yuan0037.ictlabschedules.Constants;
 
+/**
+ * Display the schedule list of a specified ICT lab.
+ *
+ * Usage:
+ * 1) take a currentLab object as the input object; 
+ *
+ * Notes:
+ * 1) Used tableLayout to show the schedules; 
+ * 2) Was not used any more because replaced by ScheduleGridActivity;
+ *
+ * @author yuan0037@algonquinlive.com
+ * @Version 1.0
+ */
 
 public class ScheduleActivity extends Activity {
 	private Lab currentLab;
 	private List<LabSchedule> labSchedules;
 	private TableLayout generalTable;
-	private String labScheduleJSONString;
 	private static final String[] days = 
 		{"sunday", "monday", "tuesday", 
 		"wednesday", "thursday", "friday", "saturday"};
@@ -58,7 +62,7 @@ public class ScheduleActivity extends Activity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
+		//Log.d(Constants.TAG, Constants.URL+currentLab.getRoom().toLowerCase());
 		new FetchLabSchedules().execute(Constants.URL+currentLab.getRoom().toLowerCase());
 	}
 	@Override
@@ -105,6 +109,7 @@ public class ScheduleActivity extends Activity {
 
 		@Override
 		protected List<LabSchedule> doInBackground( String... params ) {
+			@SuppressWarnings("unused")
 			List<LabSchedule> schedules = new ArrayList<LabSchedule>();
 
 			// Creating service handler class instance
@@ -113,8 +118,8 @@ public class ScheduleActivity extends Activity {
 			// Making a request to url and getting response
 			String jsonStr = sh.makeServiceCall( params[0], ServiceHandler.GET ) ;
 
-			Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
-			labScheduleJSONString=jsonStr;
+			//Log.d( Constants.TAG + " Response: ", "> " + jsonStr );
+			//labScheduleJSONString=jsonStr;
 			if (jsonStr != null) {
 				try {
 					JSONObject jsonObj = new JSONObject( jsonStr );
@@ -124,7 +129,7 @@ public class ScheduleActivity extends Activity {
 					//JSONArray jsonLabSchedules = jsonObj.getJSONArray(currentLab.getRoom().toLowerCase());
 					//;
 					// looping through each schedule, one at a time
-					Log.d( Constants.TAG, "tempStr1= "+tempStr);
+					//Log.d( Constants.TAG, "tempStr1= "+tempStr);
 					
 					JSONObject scheduleForWeekObj = new JSONObject(tempStr);
 					for (int i=8; i<=17; i++)
@@ -142,8 +147,9 @@ public class ScheduleActivity extends Activity {
 								lSchedule.setLabName(singleHourForOneWeekObj.getString(days[j]));
 								lSchedule.setScheduleStartHour(i);
 								lSchedule.setScheduleEndHour(i+1);
-								lSchedule.setScheduleDayOfWeek(j);
-								Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
+								//in java, Sunday = 1; monday =2; ..., saturday = 7;
+								lSchedule.setScheduleDayOfWeek(j+1);
+								//Log.d(Constants.TAG, "object added"+lSchedule.getRoom()+lSchedule.getLabName()+days[lSchedule.getScheduleDayOfWeek()]+lSchedule.getScheduleStartHour());
 								labSchedules.add(lSchedule);
 							}
 						}
@@ -151,7 +157,7 @@ public class ScheduleActivity extends Activity {
 							
 					return null;
 				} catch ( JSONException e ) {
-					Log.d(Constants.TAG, e.getMessage().toString());
+					//Log.d(Constants.TAG, e.getMessage().toString());
 					e.printStackTrace();
 				}
 			} else {
@@ -168,7 +174,7 @@ public class ScheduleActivity extends Activity {
 			if ( pDialog.isShowing() )
 				pDialog.dismiss();
 
-			Log.d(Constants.TAG, String.valueOf(labSchedules.size()));
+			//Log.d(Constants.TAG, String.valueOf(labSchedules.size()));
 			generateTable();
 		}
 	}
@@ -218,13 +224,13 @@ public class ScheduleActivity extends Activity {
 					for(LabSchedule lS : labSchedules)
 					{
 						//Log.d(Constants.TAG, "looping now:"+ lS.getLabName()+days[lS.getScheduleDayOfWeek()]);
-				        if ((lS.getScheduleStartHour().equals(i)) && (lS.getScheduleDayOfWeek().equals(j))){
+				        if ((lS.getScheduleStartHour().equals(i)) && (lS.getScheduleDayOfWeek().equals(j+1))){
 				        	TextView cellTitle=new TextView(this);
 							
 							cellTitle.setText(lS.getLabName());
 							cellTitle.setWidth(Constants.COLUMN_WIDTH);
 							cellTitle.setBackgroundColor(lS.getScheduleColor());
-							Log.d(Constants.TAG, "color = "+String.valueOf(lS.getScheduleColor()));
+							//Log.d(Constants.TAG, "color = "+String.valueOf(lS.getScheduleColor()));
 							tr.addView(cellTitle);
 							tempFound=true;
 							break;
