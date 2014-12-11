@@ -23,4 +23,3 @@ MVC
 
 Screenshots:
 ![ScreenShot](/screenshots/mainactivity.png)
-![ScreenShot](/screenshots/detailactivity.png)
