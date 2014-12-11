@@ -40,6 +40,7 @@ public class ScheduleGridActivity extends Activity {
 	private String currentLabScheduleJSONString;
 	private List<LabSchedule> labSchedules;
 	private GridLayout labGrid; 
+	private GridLayout labHourGrid;
 	private static final String[] days = 
 		{"sunday", "monday", "tuesday", 
 		"wednesday", "thursday", "friday", "saturday"};
@@ -48,6 +49,9 @@ public class ScheduleGridActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_schedule_grid);
+		
+		labGrid=(GridLayout) this.findViewById(R.id.scheduleGridView);
+		labHourGrid=(GridLayout) this.findViewById(R.id.scheduleGridViewForHourTitle);
 		labSchedules = new ArrayList<LabSchedule>();
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -200,19 +204,24 @@ public class ScheduleGridActivity extends Activity {
 
 	public void generateGrid(){
 
-		labGrid=(GridLayout) this.findViewById(R.id.scheduleGridView);
+
 		labGrid.removeAllViews();
+		labHourGrid.removeAllViews();
 		
 		//set up the grid to have 11 rows and 8 columns;
 		//11 rows: column header row, and 10 rows from 8H00 to 1700
 		//8 columns: row header column, and 7 columns from sunday to saturday; 
 		labGrid.setRowCount(11);
 		labGrid.setColumnCount(8);
+		labHourGrid.setRowCount(11);
+		labHourGrid.setColumnCount(1);
 
 		//generate the first cell of the first column (0, 0);
 		TextView tvColumnHourTitle = new TextView(this);
 		tvColumnHourTitle.setText("Time");
-		tvColumnHourTitle.setWidth(Constants.COLUMN_WIDTH);
+		tvColumnHourTitle.setHeight(50);
+		tvColumnHourTitle.setBackgroundResource(R.drawable.border_style);
+		tvColumnHourTitle.setWidth(Constants.COLUMN_WIDTH-10);
 		GridLayout.LayoutParams params = new GridLayout.LayoutParams();
 		params.height = LayoutParams.WRAP_CONTENT;
 		params.width = LayoutParams.WRAP_CONTENT;
@@ -221,8 +230,8 @@ public class ScheduleGridActivity extends Activity {
 		params.columnSpec=GridLayout.spec(0);
 		tvColumnHourTitle.setLayoutParams(params);
 
-		labGrid.addView(tvColumnHourTitle);
-
+		//labGrid.addView(tvColumnHourTitle);
+		labHourGrid.addView(tvColumnHourTitle);
 		//generate the first row's cells from Sunday to Saturday (sun, mon, tue, ...sat);
 		//from index 1 to 7
 		for (int i=0; i<=6;i++)
@@ -230,6 +239,7 @@ public class ScheduleGridActivity extends Activity {
 			TextView tvColumnTitle = new TextView(this);
 			tvColumnTitle.setText(days[i].substring(0, 3));
 			tvColumnTitle.setWidth(Constants.COLUMN_WIDTH);
+			tvColumnTitle.setHeight(50);
 			tvColumnTitle.setBackgroundResource(R.drawable.border_style);
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.WRAP_CONTENT;
@@ -246,7 +256,9 @@ public class ScheduleGridActivity extends Activity {
 		{
 			TextView tvHourTitle = new TextView(this);
 			tvHourTitle.setText(String.format("%2d", i));
-			tvHourTitle.setWidth(Constants.COLUMN_WIDTH);
+			tvHourTitle.setWidth(Constants.COLUMN_WIDTH-10);
+			tvHourTitle.setHeight(Constants.ROW_HEIGHT);
+	
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
@@ -255,6 +267,31 @@ public class ScheduleGridActivity extends Activity {
 			paramsForTitle.columnSpec=GridLayout.spec(0);
 			paramsForTitle.setGravity(Gravity.CENTER);
 			tvHourTitle.setLayoutParams(paramsForTitle);
+			//labGrid.addView(tvHourTitle);
+			labHourGrid.addView(tvHourTitle);
+		}
+		
+		//generate the first column's cells, from 8H00 to 17:00;
+		for (int i=8; i<=17; i++)
+		{
+			TextView tvHourTitle = new TextView(this);
+			tvHourTitle.setText(String.format("%2d", i));
+			//please note, have to set up the first column the same as the 
+			//other grid, if I remove this part of code, this grid's certain views
+			//will collapse to wrong positions; don't know why
+			//in order to avoid duplicated "time" column, I set the width to 1; 
+			tvHourTitle.setWidth(1);
+			tvHourTitle.setHeight(Constants.ROW_HEIGHT);
+	
+			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
+			paramsForTitle.height = LayoutParams.MATCH_PARENT;
+			paramsForTitle.width = LayoutParams.MATCH_PARENT;
+
+			paramsForTitle.rowSpec= GridLayout.spec(i-8+1);
+			paramsForTitle.columnSpec=GridLayout.spec(0);
+			paramsForTitle.setGravity(Gravity.CENTER);
+			tvHourTitle.setLayoutParams(paramsForTitle);
+			//labGrid.addView(tvHourTitle);
 			labGrid.addView(tvHourTitle);
 		}
 		
@@ -316,12 +353,21 @@ public class ScheduleGridActivity extends Activity {
 			TextView tvSchedule = new TextView(this);
 			tvSchedule.setText(lS.getLabName());
 			tvSchedule.setWidth(Constants.COLUMN_WIDTH);
+			tvSchedule.setHeight(Constants.ROW_HEIGHT*(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
 
 			GridLayout.LayoutParams paramsForTitle = new GridLayout.LayoutParams();
 			paramsForTitle.height = LayoutParams.MATCH_PARENT;
 			paramsForTitle.width = LayoutParams.MATCH_PARENT;
 			
 			//Log.d(Constants.TAG, "drawing:"+days[lS.getScheduleDayOfWeek()]+lS.getLabName()+ String.valueOf(lS.getScheduleEndHour()-lS.getScheduleStartHour()));
+			if (lS.getLabName().equals("MAD9111"))
+			{
+				Log.d(Constants.TAG, "day of week = "+days[lS.getScheduleDayOfWeek()]+" start hour = "+String.valueOf(lS.getScheduleStartHour())+"end hour = "+
+			String.valueOf(lS.getScheduleEndHour()));
+				
+				
+			}
+			
 			paramsForTitle.rowSpec= GridLayout.spec(lS.getScheduleStartHour()-8+1,lS.getScheduleEndHour()-lS.getScheduleStartHour());
 
 			paramsForTitle.columnSpec=GridLayout.spec(lS.getScheduleDayOfWeek()+1);
@@ -330,7 +376,7 @@ public class ScheduleGridActivity extends Activity {
 			tvSchedule.setLayoutParams(paramsForTitle);
 			tvSchedule.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 
-			tvSchedule.setBackgroundResource(R.drawable.border_style_schedule_cell);
+			//tvSchedule.setBackgroundResource(R.drawable.border_style_schedule_cell);
 			tvSchedule.setBackgroundColor(lS.getScheduleColor());			
 			//tvSchedule.getBackground().setAlpha(128);
 			
