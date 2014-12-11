@@ -185,14 +185,14 @@ public class ScheduleActivity extends Activity {
 
 			TextView tvColumnHourTitle = new TextView(this);
 			tvColumnHourTitle.setText("Time");
-			tvColumnHourTitle.setWidth(100);
+			tvColumnHourTitle.setWidth(Constants.COLUMN_WIDTH);
 			firstRow.addView(tvColumnHourTitle);
 
 			for (int i=0; i<=6;i++)
 			{
 				TextView tvColumnTitle = new TextView(this);
 				tvColumnTitle.setText(days[i].substring(0, 3));
-				tvColumnTitle.setWidth(100);
+				tvColumnTitle.setWidth(Constants.COLUMN_WIDTH);
 				
 				firstRow.addView(tvColumnTitle);
 				
@@ -208,7 +208,7 @@ public class ScheduleActivity extends Activity {
 				 
 				 TextView tvHourTitle = new TextView(this);
 				 tvHourTitle.setText(String.format("%2d", i));
-				 tvHourTitle.setWidth(100);
+				 tvHourTitle.setWidth(Constants.COLUMN_WIDTH);
 				 tr.addView(tvHourTitle);
 					
 				for (int j=0; j<=6; j++)
@@ -222,7 +222,7 @@ public class ScheduleActivity extends Activity {
 				        	TextView cellTitle=new TextView(this);
 							
 							cellTitle.setText(lS.getLabName());
-							cellTitle.setWidth(100);
+							cellTitle.setWidth(Constants.COLUMN_WIDTH);
 							cellTitle.setBackgroundColor(lS.getScheduleColor());
 							Log.d(Constants.TAG, "color = "+String.valueOf(lS.getScheduleColor()));
 							tr.addView(cellTitle);
@@ -235,7 +235,7 @@ public class ScheduleActivity extends Activity {
 						TextView cellTitle=new TextView(this);
 						
 						cellTitle.setText("");
-						cellTitle.setWidth(100);
+						cellTitle.setWidth(Constants.COLUMN_WIDTH);
 						tr.addView(cellTitle);
 					}
 					

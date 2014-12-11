@@ -54,6 +54,47 @@ public class LabSchedule {
 			return Integer.valueOf(Color.parseColor("#31CDFF"));
 		else if (labName.equals("MAD9034"))
 			return Integer.valueOf(Color.parseColor("#18677F"));
+
+		else if (labName.equals("CST8182"))
+			return Integer.valueOf(Color.parseColor("#1485CC"));
+		else if (labName.equals("NET2000"))
+			return Integer.valueOf(Color.parseColor("#0BD9BA"));
+		else if (labName.equals("NET3900"))
+			return Integer.valueOf(Color.parseColor("#0BC8E3"));
+		else if (labName.equals("CST8304"))
+			return Integer.valueOf(Color.parseColor("#0B1DD9"));
+		else if (labName.equals("NET3008"))
+			return Integer.valueOf(Color.parseColor("#CC7F14"));
+		else if (labName.equals("CST8278"))
+			return Integer.valueOf(Color.parseColor("#7DCC14"));
+		else if (labName.equals("NET3009"))
+			return Integer.valueOf(Color.parseColor("#18677F"));
+		else if (labName.equals("MAD9034"))
+			return Integer.valueOf(Color.parseColor("#18677F"));
+		else if (labName.equals("CST8340"))
+			return Integer.valueOf(Color.parseColor("#18677F"));
+		else if (labName.equals("CST8270"))
+			return Integer.valueOf(Color.parseColor("#18677F"));
+		else if (labName.equals("CST8271"))
+			return Integer.valueOf(Color.parseColor("#AD14CC"));
+		else if (labName.equals("NET1002"))
+			return Integer.valueOf(Color.parseColor("#14CC78"));
+		else if (labName.equals("NET1020"))
+			return Integer.valueOf(Color.parseColor("#CC5F4E"));
+		else if (labName.equals("CST8217"))
+			return Integer.valueOf(Color.parseColor("#7F0648"));
+		else if (labName.equals("NET3007"))
+			return Integer.valueOf(Color.parseColor("#CCC489"));
+		else if (labName.equals("NEW LAB"))
+			return Integer.valueOf(Color.parseColor("#3848E3"));
+		else if (labName.equals("OFFICE HOUR"))
+			return Integer.valueOf(Color.parseColor("#35D967"));
+		else if (labName.equals("ICT Coords"))
+			return Integer.valueOf(Color.parseColor("#D95E35"));
+		else if (labName.equals("MAD&D Coords"))
+			return Integer.valueOf(Color.parseColor("#35D96E"));
+		else if (labName.equals("WEEKEND!"))
+			return Integer.valueOf(Color.parseColor("#5AD92C"));										
 		else return 0;
 		
 	}
