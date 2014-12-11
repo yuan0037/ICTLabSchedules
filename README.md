@@ -20,3 +20,7 @@ Parsing object from one activity to another, and get result from another activit
 
 Concepts used: 
 MVC
+
+Screenshots:
+![ScreenShot](/screenshots/mainactivity.png)
+![ScreenShot](/screenshots/detailactivity.png)
