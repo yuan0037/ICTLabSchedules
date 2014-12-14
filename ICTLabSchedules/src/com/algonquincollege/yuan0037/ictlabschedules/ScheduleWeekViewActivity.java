@@ -66,6 +66,7 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 
 		//Get a reference for the week view in the layout.
 		mWeekView = (WeekView) findViewById(R.id.weekView);
+		
 		// Show a toast message about the touched event.
 		mWeekView.setOnEventClickListener(this);
 
@@ -142,6 +143,7 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 		int id = item.getItemId();
 		switch (id){
         case R.id.action_today:
+        	
             mWeekView.goToToday();
             return true;
         case R.id.action_day_view:
@@ -149,6 +151,7 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
                 item.setChecked(!item.isChecked());
                 mWeekViewType = TYPE_DAY_VIEW;
                 mWeekView.setNumberOfVisibleDays(1);
+                mWeekView.setDayNameLength(com.alamkanak.weekview.WeekView.LENGTH_LONG);
 
                 // Lets change some dimensions to best fit the view.
                 mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
@@ -161,7 +164,7 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
                 item.setChecked(!item.isChecked());
                 mWeekViewType = TYPE_THREE_DAY_VIEW;
                 mWeekView.setNumberOfVisibleDays(3);
-
+                mWeekView.setDayNameLength(com.alamkanak.weekview.WeekView.LENGTH_LONG);
                 // Lets change some dimensions to best fit the view.
                 mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
                 mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
@@ -173,10 +176,11 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
                 item.setChecked(!item.isChecked());
                 mWeekViewType = TYPE_WEEK_VIEW;
                 mWeekView.setNumberOfVisibleDays(7);
-
+                mWeekView.setDayNameLength(com.alamkanak.weekview.WeekView.LENGTH_SHORT);
+               // mWeekView.setColumnGap(15);
                 // Lets change some dimensions to best fit the view.
-                mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
-                mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
+                mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+                mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 8, getResources().getDisplayMetrics()));
                 mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
             }
             return true;
