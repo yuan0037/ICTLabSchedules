@@ -104,14 +104,17 @@ public class ListLabsActivity extends ListActivity implements Constants {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
-		Lab lab = labsAdapter.getItem(position); //names.get(position);
-		currentPositionID=Integer.valueOf(position);
-		Intent intent = new Intent(this, ScheduleGridActivity.class);
-		intent.putExtra("domain.Lab", lab);
-		//Log.d(Constants.TAG, "now sending data to detail activity: "+labScheduleJSONStringList.get(currentPositionID));
-		intent.putExtra("scheduleJSONString", labScheduleJSONStringList.get(currentPositionID));
-
-		startActivityForResult(intent, 1);
+//		//code to show the gridLayout activity
+//		Lab lab = labsAdapter.getItem(position); //names.get(position);
+//		currentPositionID=Integer.valueOf(position);
+//		Intent intent = new Intent(this, ScheduleGridActivity.class);
+//		intent.putExtra("domain.Lab", lab);
+//		intent.putExtra("scheduleJSONString", labScheduleJSONStringList.get(currentPositionID));
+//
+//		startActivityForResult(intent, 1);
+		
+		Intent intent = new Intent(this, ScheduleWeekViewActivity.class);
+		startActivity(intent);
 
 	}
 
