@@ -1302,10 +1302,14 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f09002c;
         public static final int action_bar_title=0x7f09002b;
         public static final int action_context_bar=0x7f090026;
+        public static final int action_day_view=0x7f090051;
         public static final int action_menu_divider=0x7f090002;
         public static final int action_menu_presenter=0x7f090003;
         public static final int action_mode_close_button=0x7f09002d;
         public static final int action_settings=0x7f09004f;
+        public static final int action_three_day_view=0x7f090052;
+        public static final int action_today=0x7f090050;
+        public static final int action_week_view=0x7f090053;
         public static final int activity_chooser_view_content=0x7f09002e;
         public static final int always=0x7f09000f;
         public static final int beginning=0x7f090016;
@@ -1480,7 +1484,11 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
         public static final int action_author=0x7f0a000e;
+        public static final int action_day_view=0x7f0a0016;
         public static final int action_settings=0x7f0a0012;
+        public static final int action_three_day_view=0x7f0a0017;
+        public static final int action_today=0x7f0a0015;
+        public static final int action_week_view=0x7f0a0018;
         public static final int app_name=0x7f0a000d;
         public static final int hello_world=0x7f0a0011;
         public static final int text_placeholder=0x7f0a000f;
