@@ -7,8 +7,7 @@ About this project:
 This project loads a list of labs from a JSON string provided by a remote service;
 then when user taps on any lab, it will check if it already has that lab's schedule 
 cached; if not, it will go to an URL to retrive that lab's schedule in JSON format; 
-The it displays the schedule using a gridLayout. 
-The schedule is displayed by a weekview library. Other implmentations (with gridLayout and tableLayout) are also included in this project. 
+The it displays the schedule using a WeekView object. Other implmentations (display schedule with gridLayout and tableLayout) are also included in this project. 
 
 The app can detect any class cross multiple hours and only show one "cell" for it;
 
