@@ -1,6 +1,7 @@
 package com.algonquincollege.yuan0037.ictlabschedules;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -172,7 +173,8 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
             }
             return true;
         case R.id.action_week_view:
-            if (mWeekViewType != TYPE_WEEK_VIEW) {
+            if (mWeekViewType != TYPE_WEEK_VIEW) 
+            {
                 item.setChecked(!item.isChecked());
                 mWeekViewType = TYPE_WEEK_VIEW;
                 mWeekView.setNumberOfVisibleDays(7);
@@ -184,6 +186,16 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
                 mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, getResources().getDisplayMetrics()));
             }
             return true;
+
+		
+		case android.R.id.home:
+		
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("scheduleJSONString",currentLabScheduleJSONString);
+			setResult(RESULT_OK,returnIntent);
+			finish();
+			return true;
+		
 		}
         return super.onOptionsItemSelected(item);
 	}
@@ -205,25 +217,33 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 		
 		event.setColor(ls.getScheduleColor());
 		event.setName(ls.getLabName());
-		Log.d(Constants.TAG,"start time = "+ event.getStartTime() +" end time = "+event.getEndTime());
+		//Log.d(Constants.TAG,"start time = "+ String.valueOf(event.getStartTime().get(Calendar.HOUR_OF_DAY)) +" end time = "+String.valueOf(event.getEndTime().get(Calendar.HOUR_OF_DAY)));
 		return event;
 	}
 	@Override
 	public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
 
-		Toast.makeText(this, "month change", Toast.LENGTH_SHORT).show();
+//		Log.d(Constants.TAG, "month change newYear = "+String.valueOf(newYear)+
+//				" newMonth="+String.valueOf(newMonth));
 		// Populate the week view with some events.
 		List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
 		
 		Calendar c = Calendar.getInstance();
+		//Log.d(Constants.TAG ,"now is ="+c.toString());
 		c.set(Calendar.HOUR_OF_DAY, 3);
 		c.set(Calendar.MINUTE, 0);
-		c.set(Calendar.MONTH, newMonth);
+		c.set(Calendar.MONTH, newMonth-1);//java's months is from 0 to 11; january=1; dec = 11;
 		c.set(Calendar.YEAR, newYear);
 		c.set(Calendar.DAY_OF_MONTH, 1);
-		Integer maxDayOfNewMonth = Integer.valueOf(c.getActualMaximum(Calendar.DAY_OF_MONTH));
-		Log.d(Constants.TAG, "max day of month = "+String.valueOf(maxDayOfNewMonth));
+
+		c.add(Calendar.MONTH, 1);
+		c.add(Calendar.DATE, -1);
+		
+		//SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		//Log.d(Constants.TAG, c.toString());
+		Integer maxDayOfNewMonth = c.get(Calendar.DAY_OF_MONTH); //Integer.valueOf(c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		//Log.d(Constants.TAG, c.toString() + " and max day of month = "+String.valueOf(maxDayOfNewMonth));
 		for (int i=1; i<=maxDayOfNewMonth; i++)
 		{
 			c.set(Calendar.DAY_OF_MONTH, i);
@@ -237,7 +257,11 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 		}
 
 
+//		Log.d(Constants.TAG, "events count ="+String.valueOf(events.size())
+//				+" month change newYear = "+String.valueOf(newYear)+" newMonth="+String.valueOf(newMonth));
 		return events;
+		
+		
 	}
 
 
@@ -301,7 +325,7 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 			//Log.d(Constants.TAG, String.valueOf(labSchedules.size()));
 			generateEventPattern();
 			
-			mWeekView.notifyDatasetChanged();
+			
 		}
 	}
 
@@ -347,6 +371,6 @@ public class ScheduleWeekViewActivity extends Activity implements EventClickList
 		labSchedules.clear();
 		labSchedules.addAll(newWeekScheduleList);
 		
-
+		mWeekView.notifyDatasetChanged();
 	}	
 }
