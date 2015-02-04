@@ -1,5 +1,4 @@
 #ICTLabSchedules
-===============
 A little calendar app to load lab name list remotely (via JSON), and tap on each lab will show that lab's schedule in a calendar view similar to Android's native calendar app. 
 
 
