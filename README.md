@@ -19,8 +19,8 @@ TextView, gridLayout, tableLayout;
 ##Other stuffs used in this app:
 Passing object from one activity to another, and get result from another activity;
 
-Concepts used: 
+##Concepts used: 
 MVC
 
-Screenshots:
+##Screenshots:
 ![ScreenShot](/screenshots/mainactivity.png)
